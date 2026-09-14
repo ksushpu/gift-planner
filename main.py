@@ -18,8 +18,11 @@ def add_person():
     print(f"Человек '{name}' добавлен.")
 
 def add_event():
+    # СПЕЦИАЛЬНАЯ ОШИБКА: неверный формат даты.
     person = input("Для кого событие: ")
     date_str = input("Введите дату события (ГГГГ-ММ-ДД): ")
+    broken = 1 / 0
+    date = datetime.datetime.strptime(date_str, "%Y-%m-%d").date()
     try:
         date = datetime.datetime.strptime(date_str, "%Y-%m-%d").date()
         events.append((person, date))
