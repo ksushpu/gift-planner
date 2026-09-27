@@ -15,7 +15,8 @@ def input_date(prompt: str) -> datetime.date:
     while True:
         date_str = input(prompt)
         try:
-            return datetime.datetime.strptime(date_str, "%Y-%m-%d").date()
+            parsed = datetime.datetime.strptime(date_str, "%Y-%m-%d")
+            return parsed.date()
         except ValueError:
             print("Ошибка: неверный формат даты.")
             print("Попробуйте снова (ГГГГ-ММ-ДД).")

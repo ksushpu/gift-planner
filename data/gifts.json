@@ -1,6 +1,14 @@
 [
     {
-        "person": "Иван",
-        "idea": "Книга"
+        "id": 1,
+        "person_id": 1,
+        "idea": "Книга",
+        "is_done": false
+    },
+    {
+        "id": 2,
+        "person_id": 3,
+        "idea": "Часы",
+        "is_done": false
     }
 ]
