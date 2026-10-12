@@ -1,5 +1,5 @@
 import datetime
-from typing import List
+from typing import List, Optional
 
 from .persons import Person
 
@@ -11,11 +11,13 @@ class Event:
         self,
         event_id: int,
         person: Person,
+        title: str,
         date: datetime.date,
     ) -> None:
         """Создать объект события."""
         self.id = event_id
         self.person = person
+        self.title = title
         self.date = date
 
     def days_until(self) -> int:
@@ -25,19 +27,31 @@ class Event:
 
     def __str__(self) -> str:
         """Строковое представление события."""
-        return f"#{self.id} {self.date} — {self.person.name}"
+        return f"#{self.id} {self.title} ({self.date}) — {self.person.name}"
 
 
 def add_event(
     events: List[Event],
     person: Person,
+    title: str,
     date: datetime.date,
 ) -> Event:
     """Создать объект Event и добавить его в коллекцию."""
     new_id = max((e.id for e in events), default=0) + 1
-    event = Event(new_id, person, date)
+    event = Event(new_id, person, title, date)
     events.append(event)
     return event
+
+
+def find_event_by_id(
+    events: List[Event],
+    event_id: int,
+) -> Optional[Event]:
+    """Найти событие по идентификатору."""
+    for event in events:
+        if event.id == event_id:
+            return event
+    return None
 
 
 def sort_events_by_date(events: List[Event]) -> List[Event]:

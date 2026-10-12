@@ -1,10 +1,10 @@
+from models.events import add_event, show_events
+from models.gifts import add_gift, show_gifts
 from models.persons import (
     add_person,
     find_persons_by_name,
     show_persons,
 )
-from models.events import add_event, show_events
-from models.gifts import add_gift, show_gifts
 from storage import (
     load_events,
     load_gifts,
@@ -39,11 +39,30 @@ def choose_person(persons):
     return found[0]
 
 
+def choose_event(events):
+    """Запросить id события и вернуть его."""
+    if not events:
+        print("Сначала добавьте событие.")
+        return None
+    for event in events:
+        print(f"{event.id} — {event.title} ({event.date})")
+    try:
+        event_id = int(input("Введите id события: "))
+    except ValueError:
+        print("Ошибка: введите число.")
+        return None
+    for event in events:
+        if event.id == event_id:
+            return event
+    print("Событие не найдено.")
+    return None
+
+
 def main() -> None:
     """Точка запуска приложения."""
     persons = load_persons()
     events = load_events(persons)
-    gifts = load_gifts(persons)
+    gifts = load_gifts(persons, events)
 
     while True:
         show_menu()
@@ -59,29 +78,30 @@ def main() -> None:
             person = choose_person(persons)
             if person is None:
                 continue
+            title = input("Название события: ")
             date = input_date("Дата события (ГГГГ-ММ-ДД): ")
-            add_event(events, person, date)
+            add_event(events, person, title, date)
             save_events(events)
-            print(f"Событие для '{person.name}' добавлено.")
+            print(f"Событие '{title}' добавлено.")
 
         elif choice == "3":
             person = choose_person(persons)
             if person is None:
                 continue
+            event = choose_event(events)
+            if event is None:
+                continue
             idea = input("Идея подарка: ")
-            add_gift(gifts, person, idea)
+            add_gift(gifts, person, event, idea)
             save_gifts(gifts)
-            print(f"Идея '{idea}' добавлена для '{person.name}'.")
+            print(f"Подарок '{idea}' добавлен.")
 
         elif choice == "4":
             show_events(events)
-
         elif choice == "5":
             show_gifts(gifts)
-
         elif choice == "6":
             show_persons(persons)
-
         elif choice == "7":
             query = input("Имя для поиска: ")
             results = find_persons_by_name(persons, query)
@@ -90,11 +110,9 @@ def main() -> None:
             else:
                 for p in results:
                     print(p)
-
         elif choice == "0":
             print("Выход.")
             break
-
         else:
             print("Неизвестная команда.")
 

@@ -2,13 +2,15 @@
     {
         "id": 1,
         "person_id": 1,
-        "idea": "Книга",
+        "event_id": 1,
+        "idea": "Книга по программированию",
         "is_done": false
     },
     {
         "id": 2,
-        "person_id": 3,
-        "idea": "Часы",
-        "is_done": false
+        "person_id": 2,
+        "event_id": 2,
+        "idea": "Набор для творчества",
+        "is_done": true
     }
 ]

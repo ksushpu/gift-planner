@@ -4,6 +4,7 @@ import os
 from typing import List
 
 from models import Event, Gift, Person
+from models.events import find_event_by_id
 from models.persons import find_person_by_id
 
 DATA_DIR = "data"
@@ -48,8 +49,10 @@ def load_persons(filename: str = "people.json") -> List[Person]:
     return [Person(item["id"], item["name"]) for item in raw]
 
 
-def save_persons(persons: List[Person],
-                 filename: str = "people.json") -> None:
+def save_persons(
+    persons: List[Person],
+    filename: str = "people.json",
+) -> None:
     """Сохранить объекты Person в JSON."""
     data = [{"id": p.id, "name": p.name} for p in persons]
     _save_raw(filename, data)
@@ -69,17 +72,22 @@ def load_events(
         if person is None:
             continue
         event_date = datetime.date.fromisoformat(item["date"])
-        events.append(Event(item["id"], person, event_date))
+        events.append(
+            Event(item["id"], person, item["title"], event_date)
+        )
     return events
 
 
-def save_events(events: List[Event],
-                filename: str = "events.json") -> None:
+def save_events(
+    events: List[Event],
+    filename: str = "events.json",
+) -> None:
     """Сохранить объекты Event в JSON."""
     data = [
         {
             "id": e.id,
             "person_id": e.person.id,
+            "title": e.title,
             "date": e.date.isoformat(),
         }
         for e in events
@@ -91,28 +99,33 @@ def save_events(events: List[Event],
 
 def load_gifts(
     persons: List[Person],
+    events: List[Event],
     filename: str = "gifts.json",
 ) -> List[Gift]:
-    """Загрузить подарки и связать их с объектами Person."""
+    """Загрузить подарки и связать их с Person и Event."""
     raw = _load_raw(filename)
     gifts: List[Gift] = []
     for item in raw:
         person = find_person_by_id(persons, item["person_id"])
-        if person is None:
+        event = find_event_by_id(events, item["event_id"])
+        if person is None or event is None:
             continue
-        gift = Gift(item["id"], person, item["idea"])
+        gift = Gift(item["id"], person, event, item["idea"])
         gift.is_done = item.get("is_done", False)
         gifts.append(gift)
     return gifts
 
 
-def save_gifts(gifts: List[Gift],
-               filename: str = "gifts.json") -> None:
+def save_gifts(
+    gifts: List[Gift],
+    filename: str = "gifts.json",
+) -> None:
     """Сохранить объекты Gift в JSON."""
     data = [
         {
             "id": g.id,
             "person_id": g.person.id,
+            "event_id": g.event.id,
             "idea": g.idea,
             "is_done": g.is_done,
         }
