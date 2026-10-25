@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Статистика - Gift Planner{% endblock %}
+
+{% block content %}
+<h1>Статистика подарков</h1>
+<ul class="list-group mt-3">
+    {% for item in statistics %}
+    <li class="list-group-item">
+        <strong>{{ item.person_name }}</strong>: 
+        {{ item.gifts_count }} {{ item.word }}
+    </li>
+    {% empty %}
+    <li class="list-group-item">Данных нет.</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'gifts:list' %}" class="btn btn-secondary mt-3">← Назад к подаркам</a>
+{% endblock %}

@@ -1,14 +1,25 @@
 {% extends "base.html" %}
-
 {% block title %}Подарки - Gift Planner{% endblock %}
 
 {% block content %}
 <h1>Подарки</h1>
 <p>Всего идей: {{ gifts|length }}</p>
+<a href="{% url 'gifts:statistics' %}" class="btn btn-info mb-3">Посмотреть статистику</a>
 
 <ul class="list-group">
     {% for gift in gifts %}
-        {% include "gifts/includes/gift_card.html" %}
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+            <a href="{% url 'gifts:detail' gift.id %}"><strong>{{ gift.idea }}</strong></a>
+            <br>
+            <small class="text-muted">Кому: {{ gift.person_name }} | Событие: {{ gift.event_title }}</small>
+        </div>
+        {% if gift.is_done %}
+            <span class="badge bg-success">Вручён</span>
+        {% else %}
+            <span class="badge bg-warning text-dark">Не вручён</span>
+        {% endif %}
+    </li>
     {% empty %}
         <li class="list-group-item">Список пуст.</li>
     {% endfor %}
