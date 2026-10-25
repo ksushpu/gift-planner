@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}
+{% if gift %}Подарок №{{ gift.id }} - Gift Planner{% else %}Подарок не найден - Gift Planner{% endif %}
+{% endblock %}
+
+{% block content %}
+{% if gift %}
+    <div class="card">
+        <div class="card-body">
+            <h1 class="card-title">Подарок №{{ gift.id }}</h1>
+            <p class="card-text"><strong>Идея:</strong> {{ gift.idea|default:"Без названия" }}</p>
+            <p class="card-text"><strong>Кому:</strong> {{ gift.person.name }}</p>
+            <p class="card-text"><strong>Событие:</strong> {{ gift.event.title }} ({{ gift.event.date }})</p>
+            <p class="card-text">
+                <strong>Статус:</strong>
+                {% if gift.is_done %}
+                    <span class="badge bg-success">Вручён</span>
+                {% else %}
+                    <span class="badge bg-warning text-dark">Не вручён</span>
+                {% endif %}
+            </p>
+        </div>
+    </div>
+{% else %}
+    <h1 class="text-danger">Подарок не найден</h1>
+    <p>Подарок с указанным идентификатором отсутствует.</p>
+{% endif %}
+
+<a href="{% url 'gifts:list' %}" class="btn btn-outline-secondary mt-3">
+    ← к списку подарков
+</a>
+{% endblock %}

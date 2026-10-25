@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Главная - Gift Planner{% endblock %}
+
+{% block content %}
+<h1 class="display-4">Gift Planner</h1>
+<p class="lead">Система планирования подарков.</p>
+<p>Основные разделы:</p>
+<a href="{% url 'people:list' %}" class="btn btn-primary me-2">Люди</a>
+<a href="{% url 'events:list' %}" class="btn btn-secondary me-2">События</a>
+<a href="{% url 'gifts:list' %}" class="btn btn-success">Подарки</a>
+{% endblock %}

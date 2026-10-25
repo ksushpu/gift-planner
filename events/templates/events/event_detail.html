@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}
+{% if event %}{{ event.title }} - Gift Planner{% else %}Событие не найдено - Gift Planner{% endif %}
+{% endblock %}
+
+{% block content %}
+{% if event %}
+    <div class="card">
+        <div class="card-body">
+            <h1 class="card-title">{{ event.title }}</h1>
+            <p class="card-text"><strong>ID:</strong> {{ event.id }}</p>
+            <p class="card-text"><strong>Дата:</strong> {{ event.date }}</p>
+            <p class="card-text"><strong>Кому:</strong> {{ event.person.name }}</p>
+            <p class="card-text"><strong>Дней до события:</strong> {{ event.days_until }}</p>
+        </div>
+    </div>
+{% else %}
+    <h1 class="text-danger">Событие не найдено</h1>
+    <p>Событие с указанным идентификатором отсутствует.</p>
+{% endif %}
+
+<a href="{% url 'events:list' %}" class="btn btn-outline-secondary mt-3">
+    ← к списку событий
+</a>
+{% endblock %}

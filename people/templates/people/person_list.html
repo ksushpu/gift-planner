@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Люди - Gift Planner{% endblock %}
+
+{% block content %}
+<h1>Люди</h1>
+<p>Всего людей: {{ persons|length }}</p>
+
+<ul class="list-group">
+    {% for person in persons %}
+    <li class="list-group-item">
+        {{ person.name|default:"Без имени" }}
+    </li>
+    {% empty %}
+    <li class="list-group-item">Список пуст.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

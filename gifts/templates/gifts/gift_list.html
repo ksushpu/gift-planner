@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Подарки - Gift Planner{% endblock %}
+
+{% block content %}
+<h1>Подарки</h1>
+<p>Всего идей: {{ gifts|length }}</p>
+
+<ul class="list-group">
+    {% for gift in gifts %}
+        {% include "gifts/includes/gift_card.html" %}
+    {% empty %}
+        <li class="list-group-item">Список пуст.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

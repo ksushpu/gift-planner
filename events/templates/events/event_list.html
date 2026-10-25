@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}События - Gift Planner{% endblock %}
+
+{% block content %}
+<h1>События</h1>
+<p>Всего событий: {{ events|length }}</p>
+
+<ul class="list-group">
+    {% for event in events %}
+    <li class="list-group-item">
+        <a href="{% url 'events:detail' event.id %}">
+            {{ event.title }} — {{ event.date }}
+        </a>
+        <span class="badge bg-secondary">Для: {{ event.person.name }}</span>
+    </li>
+    {% empty %}
+    <li class="list-group-item">Список пуст.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

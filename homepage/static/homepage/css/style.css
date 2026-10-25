@@ -1,0 +1,17 @@
+/* Собственные стили Gift Planner */
+body {
+    background-color: #f8f9fa;
+}
+
+.card {
+    border-left: 5px solid #198754; /* Зеленая полоса слева */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.gift-card {
+    transition: transform 0.2s;
+}
+
+.gift-card:hover {
+    transform: scale(1.01);
+}

@@ -1,8 +1,9 @@
 from django.urls import path
-
 from . import views
 
+app_name = "gifts"
+
 urlpatterns = [
-    path("", views.gifts, name="gifts"),
-    path("<int:gift_id>/", views.gift_detail, name="gift_detail"),
+    path("", views.gifts, name="list"),
+    path("<int:gift_id>/", views.gift_detail, name="detail"),
 ]
