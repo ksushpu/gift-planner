@@ -37,6 +37,7 @@
 - Django 5.2
 - Django Template Language (DTL)
 - HTML, CSS, JavaScript, Bootstrap 5.3
+- SQLite, SQL (библиотека sqlite3)
 - pytest, flake8
 
 ## Структура проекта
@@ -48,9 +49,11 @@
 - `events/` — страницы событий;
 - `gifts/` — страницы подарков (с включаемыми шаблонами);
 - `models/` — классы предметной области (ПР3);
+- `db/` — модуль подключения к БД и скрипт импорта;
+- `sql/` — SQL-скрипты (схема и запросы);
 - `storage.py` — загрузка и сохранение JSON;
 - `main.py` — консольная версия (сохранена);
-- `data/` — JSON-файлы;
+- `data/` — JSON-файлы и файл базы данных;
 - `tests/` — тесты pytest.
 
 ## Страницы веб-интерфейса
@@ -62,6 +65,7 @@
 | `/events/<id>/` | страница события |
 | `/gifts/` | список подарков |
 | `/gifts/<id>/` | страница подарка |
+| `/gifts/statistics/` | статистика подарков |
 
 ## Django Templates (Шаблоны)
 HTML-страницы формируются с помощью Django Template Language. Генерация HTML в Python-коде (`views.py`) больше не используется — теперь view-функции передают данные через контекст (`context`) и вызывают функцию `render()`.
@@ -79,6 +83,23 @@ CSS, JavaScript и изображения подключены через мех
 - CSS: `{% static 'homepage/css/style.css' %}`
 - JS: `{% static 'homepage/js/main.js' %}`
 - Логотип: `{% static 'homepage/img/logo.png' %}`
+
+## База данных SQLite
+На этапе ПР7 в проект добавлен слой реляционного хранения данных на основе SQLite.
+
+**Файл базы данных:** `data/gift_planner.sqlite`.
+
+**Структура таблиц (файл `sql/schema.sql`):**
+- `people` — люди (`id`, `name`);
+- `events` — события (`id`, `person_id`, `title`, `date`);
+- `gifts` — подарки (`id`, `person_id`, `event_id`, `idea`, `is_done`).
+
+**Работа с базой:**
+- `db/database.py` — подключение к SQLite (`PRAGMA foreign_keys = ON`);
+- `db/import_json.py` — скрипт переноса данных из JSON в SQLite;
+- `sql/queries.sql` — 10 SQL-запросов (SELECT, WHERE, JOIN, COUNT, GROUP BY, HAVING).
+
+**Интеграция с Django:** представления в приложениях выполняют SQL-запросы через `sqlite3` и передают данные в шаблоны. Используются параметризованные запросы для защиты от инъекций. Добавлена страница статистики `/gifts/statistics/`.
 
 ## Запуск веб-версии
 ```bash
