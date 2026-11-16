@@ -6,6 +6,24 @@
 <h1>Люди</h1>
 <p>Всего людей: {{ persons|length }}</p>
 
+<form method="get" class="row g-2 align-items-end mb-3">
+    <div class="col-md-6">
+        <label for="q" class="form-label">Поиск по имени</label>
+        <input
+            type="text"
+            id="q"
+            name="q"
+            class="form-control"
+            value="{{ query }}"
+            placeholder="Например, Иван"
+        >
+    </div>
+    <div class="col-md-6">
+        <button type="submit" class="btn btn-primary">Найти</button>
+        <a href="{% url 'people:list' %}" class="btn btn-outline-secondary">Сбросить</a>
+    </div>
+</form>
+
 <ul class="list-group">
     {% for person in persons %}
     <li class="list-group-item">

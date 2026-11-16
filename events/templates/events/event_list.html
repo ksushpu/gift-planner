@@ -6,6 +6,39 @@
 <h1>События</h1>
 <p>Всего событий: {{ events|length }}</p>
 
+<form method="get" class="row g-2 align-items-end mb-3">
+    <div class="col-md-5">
+        <label for="q" class="form-label">Поиск</label>
+        <input
+            type="text"
+            id="q"
+            name="q"
+            class="form-control"
+            value="{{ query }}"
+            placeholder="Название или имя человека"
+        >
+    </div>
+    <div class="col-md-3">
+        <div class="form-check mt-4">
+            <input
+                class="form-check-input"
+                type="checkbox"
+                id="upcoming"
+                name="upcoming"
+                value="1"
+                {% if upcoming_only %}checked{% endif %}
+            >
+            <label class="form-check-label" for="upcoming">
+                Только предстоящие
+            </label>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <button type="submit" class="btn btn-primary">Найти</button>
+        <a href="{% url 'events:list' %}" class="btn btn-outline-secondary">Сбросить</a>
+    </div>
+</form>
+
 <ul class="list-group">
     {% for event in events %}
     <li class="list-group-item">

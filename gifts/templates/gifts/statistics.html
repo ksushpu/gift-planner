@@ -3,10 +3,32 @@
 
 {% block content %}
 <h1>Статистика подарков</h1>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="border rounded p-3">
+            <div class="text-muted">Всего подарков</div>
+            <div class="fs-4">{{ summary.total|default:0 }}</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="border rounded p-3">
+            <div class="text-muted">Вручено</div>
+            <div class="fs-4">{{ summary.done|default:0 }}</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="border rounded p-3">
+            <div class="text-muted">Не вручено</div>
+            <div class="fs-4">{{ summary.pending|default:0 }}</div>
+        </div>
+    </div>
+</div>
+
 <ul class="list-group mt-3">
     {% for item in statistics %}
     <li class="list-group-item">
-        <strong>{{ item.person_name }}</strong>: 
+        <strong>{{ item.person_name }}</strong>:
         {{ item.gifts_count }} {{ item.word }}
     </li>
     {% empty %}
