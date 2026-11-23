@@ -18,6 +18,8 @@
 - Django 5.2
 - Django ORM
 - Django Admin
+- Django Forms и ModelForm
+- загрузка изображений (Pillow, MEDIA)
 - Django Debug Toolbar
 - Django Template Language (DTL)
 - HTML, CSS, JavaScript, Bootstrap 5.3

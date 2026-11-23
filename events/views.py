@@ -1,8 +1,10 @@
 import datetime
 
+from django.contrib import messages
 from django.db.models import Q
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 
+from .forms import EventForm
 from .models import Event
 
 
@@ -32,6 +34,40 @@ def events(request):
         "upcoming_only": upcoming_only,
     }
     return render(request, "events/event_list.html", context)
+
+
+def event_create(request):
+    """Создание события."""
+    if request.method == "POST":
+        form = EventForm(request.POST, request.FILES)
+        if form.is_valid():
+            event = form.save()
+            messages.success(request, "Событие сохранено.")
+            return redirect(event.get_absolute_url())
+    else:
+        form = EventForm()
+    return render(request, "events/event_form.html", {
+        "form": form,
+        "title": "Новое событие",
+    })
+
+
+def event_edit(request, event_slug):
+    """Редактирование события и его изображения."""
+    event = get_object_or_404(Event, slug=event_slug)
+    if request.method == "POST":
+        form = EventForm(request.POST, request.FILES, instance=event)
+        if form.is_valid():
+            event = form.save()
+            messages.success(request, "Изменения сохранены.")
+            return redirect(event.get_absolute_url())
+    else:
+        form = EventForm(instance=event)
+    return render(request, "events/event_form.html", {
+        "form": form,
+        "title": f"Редактирование: {event.title}",
+        "event": event,
+    })
 
 
 def event_detail(request, event_slug):

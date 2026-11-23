@@ -4,6 +4,7 @@
 
 {% block content %}
 <h1>События</h1>
+<a href="{% url 'events:create' %}" class="btn btn-primary mb-3">Добавить событие</a>
 <p>Всего событий: {{ events|length }}</p>
 
 <form method="get" class="row g-2 align-items-end mb-3">

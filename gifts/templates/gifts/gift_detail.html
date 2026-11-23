@@ -16,6 +16,10 @@
                 <strong>Статус:</strong>
                 {{ gift.get_status_display }}
             </p>
+            <a href="{% url 'gifts:edit' gift.pk %}" class="btn btn-primary">Редактировать</a>
+            {% if gift.status != "cancelled" %}
+            <a href="{% url 'gifts:cancel' gift.pk %}" class="btn btn-outline-danger">Отменить</a>
+            {% endif %}
         </div>
     </div>
 {% else %}

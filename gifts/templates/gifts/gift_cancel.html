@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Отмена подарка - Gift Planner{% endblock %}
+
+{% block content %}
+<h1>Отменить подарок</h1>
+<p>
+    Подарок «{{ gift.idea }}» для {{ gift.person.name }}
+    к событию «{{ gift.event.title }}» останется в базе,
+    но получит статус «Отменён».
+</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Отменить подарок</button>
+    <a href="{% url 'gifts:detail' gift.pk %}" class="btn btn-outline-secondary">Назад</a>
+</form>
+{% endblock %}

@@ -34,6 +34,12 @@ class Event(models.Model):
         verbose_name="Дата",
         help_text="Дата события в формате ГГГГ-ММ-ДД.",
     )
+    image = models.ImageField(
+        upload_to="events/",
+        blank=True,
+        verbose_name="Изображение",
+        help_text="Необязательная картинка события.",
+    )
     event_year = models.GeneratedField(
         expression=ExtractYear("date"),
         output_field=models.IntegerField(),

@@ -8,11 +8,17 @@
 {% if event %}
     <div class="card">
         <div class="card-body">
+            {% if event.image %}
+            <img src="{{ event.image.url }}" alt="{{ event.title }}" class="img-fluid rounded mb-3">
+            {% else %}
+            <p class="text-muted">Изображение не загружено.</p>
+            {% endif %}
             <h1 class="card-title">{{ event.title }}</h1>
             <p class="card-text"><strong>ID:</strong> {{ event.id }}</p>
             <p class="card-text"><strong>Дата:</strong> {{ event.date }}</p>
             <p class="card-text"><strong>Кому:</strong> {{ event.person.name }}</p>
             <p class="card-text"><strong>Дней до события:</strong> {{ event.days_until }}</p>
+            <a href="{% url 'events:edit' event.slug %}" class="btn btn-primary">Редактировать</a>
         </div>
     </div>
 {% else %}

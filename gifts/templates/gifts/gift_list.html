@@ -4,66 +4,34 @@
 {% block content %}
 <h1>Подарки</h1>
 <p>Всего идей: {{ total_count }}</p>
+<a href="{% url 'gifts:create' %}" class="btn btn-primary mb-3">Добавить подарок</a>
 <a href="{% url 'gifts:statistics' %}" class="btn btn-info mb-3">Посмотреть статистику</a>
 
 <form method="get" class="mb-4">
+    {{ filter_form.non_field_errors }}
     <div class="row g-3 align-items-end">
         <div class="col-md-3">
-            <label for="q" class="form-label">Поиск</label>
-            <input
-                type="text"
-                id="q"
-                name="q"
-                class="form-control"
-                value="{{ query }}"
-                placeholder="Идея или имя"
-            >
+            <label class="form-label" for="{{ filter_form.q.id_for_label }}">{{ filter_form.q.label }}</label>
+            {{ filter_form.q }}
+            <div class="text-danger small">{{ filter_form.q.errors }}</div>
         </div>
         <div class="col-md-3">
-            <label for="person" class="form-label">Человек</label>
-            <select id="person" name="person" class="form-select">
-                <option value="">Все люди</option>
-                {% for person in persons %}
-                <option
-                    value="{{ person.pk }}"
-                    {% if selected_person == person.pk|stringformat:"s" %}selected{% endif %}
-                >
-                    {{ person.name }}
-                </option>
-                {% endfor %}
-            </select>
+            <label class="form-label" for="{{ filter_form.person.id_for_label }}">{{ filter_form.person.label }}</label>
+            {{ filter_form.person }}
+            <div class="text-danger small">{{ filter_form.person.errors }}</div>
         </div>
         <div class="col-md-3">
-            <label for="event" class="form-label">Событие</label>
-            <select id="event" name="event" class="form-select">
-                <option value="">Все события</option>
-                {% for event in events %}
-                <option
-                    value="{{ event.pk }}"
-                    {% if selected_event == event.pk|stringformat:"s" %}selected{% endif %}
-                >
-                    {{ event.title }}
-                </option>
-                {% endfor %}
-            </select>
+            <label class="form-label" for="{{ filter_form.event.id_for_label }}">{{ filter_form.event.label }}</label>
+            {{ filter_form.event }}
+            <div class="text-danger small">{{ filter_form.event.errors }}</div>
         </div>
         <div class="col-md-3">
-            <label for="status" class="form-label">Статус</label>
-            <select id="status" name="status" class="form-select">
-                <option value="" {% if status == "" %}selected{% endif %}>Все</option>
-                <option value="pending" {% if status == "pending" %}selected{% endif %}>Запланирован</option>
-                <option value="done" {% if status == "done" %}selected{% endif %}>Вручён</option>
-                <option value="cancelled" {% if status == "cancelled" %}selected{% endif %}>Отменён</option>
-            </select>
+            <label class="form-label" for="{{ filter_form.status.id_for_label }}">{{ filter_form.status.label }}</label>
+            {{ filter_form.status }}
         </div>
         <div class="col-md-3">
-            <label for="sort" class="form-label">Сортировать по</label>
-            <select id="sort" name="sort" class="form-select">
-                <option value="id" {% if sort == "id" %}selected{% endif %}>ID</option>
-                <option value="idea" {% if sort == "idea" %}selected{% endif %}>Идее</option>
-                <option value="person" {% if sort == "person" %}selected{% endif %}>Человеку</option>
-                <option value="event" {% if sort == "event" %}selected{% endif %}>Событию</option>
-            </select>
+            <label class="form-label" for="{{ filter_form.sort.id_for_label }}">{{ filter_form.sort.label }}</label>
+            {{ filter_form.sort }}
         </div>
         <div class="col-md-3">
             <button type="submit" class="btn btn-primary">Найти</button>

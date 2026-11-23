@@ -1,10 +1,12 @@
+from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Avg, Count, F, Max, Min, Q, Sum
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 
 from events.models import Event
 from people.models import Person
 
+from .forms import GiftFilterForm, GiftForm
 from .models import Gift
 
 
@@ -23,42 +25,37 @@ def _gift_word(count: int) -> str:
 
 def gifts(request):
     """Страница со списком подарков с фильтрами, поиском и пагинацией."""
-    query = request.GET.get("q", "").strip()
-    person_id = request.GET.get("person", "").strip()
-    event_id = request.GET.get("event", "").strip()
-    status = request.GET.get("status", "").strip()
-    sort = request.GET.get("sort", "id")
-
-    # Базовая выборка подарков.
+    filter_form = GiftFilterForm(request.GET or None)
     gifts_data = Gift.objects.all()
+    sort = "id"
 
-    # Поиск по идее подарка и имени человека.
-    if query:
-        gifts_data = gifts_data.filter(
-            Q(idea__icontains=query) | Q(person__name__icontains=query)
-        )
+    if filter_form.is_bound and filter_form.is_valid():
+        query = filter_form.cleaned_data["q"]
+        person = filter_form.cleaned_data["person"]
+        event = filter_form.cleaned_data["event"]
+        status = filter_form.cleaned_data["status"]
+        sort = filter_form.cleaned_data["sort"] or "id"
 
-    # Фильтрация по человеку и событию (поля связанных моделей).
-    if person_id.isdigit():
-        gifts_data = gifts_data.filter(person_id=int(person_id))
-    if event_id.isdigit():
-        gifts_data = gifts_data.filter(event_id=int(event_id))
+        if query:
+            gifts_data = gifts_data.filter(
+                Q(idea__icontains=query) | Q(person__name__icontains=query)
+            )
+        if person:
+            gifts_data = gifts_data.filter(person=person)
+        if event:
+            gifts_data = gifts_data.filter(event=event)
+        if status == "done":
+            gifts_data = gifts_data.given()
+        elif status == "pending":
+            gifts_data = gifts_data.planned()
+        elif status == "cancelled":
+            gifts_data = gifts_data.cancelled()
 
-    # Фильтрация по статусу вручения.
-    if status == "done":
-        gifts_data = gifts_data.given()
-    elif status == "pending":
-        gifts_data = gifts_data.planned()
-    elif status == "cancelled":
-        gifts_data = gifts_data.cancelled()
-
-    # Добавляем сведения о связанных объектах для шаблона.
     gifts_data = gifts_data.annotate(
         person_name=F("person__name"),
         event_title=F("event__title"),
     )
 
-    # Выбор поля сортировки из заранее заданного соответствия.
     sort_fields = {
         "id": "id",
         "idea": "idea",
@@ -84,16 +81,59 @@ def gifts(request):
     context = {
         "gifts": page_obj,
         "page_obj": page_obj,
-        "query": query,
-        "selected_person": person_id,
-        "selected_event": event_id,
-        "status": status,
+        "filter_form": filter_form,
         "sort": sort,
-        "persons": Person.objects.order_by("name"),
-        "events": Event.objects.order_by("title"),
         "total_count": paginator.count,
     }
     return render(request, "gifts/gift_list.html", context)
+
+
+def gift_create(request):
+    """Создание подарка через ModelForm."""
+    if request.method == "POST":
+        form = GiftForm(request.POST)
+        if form.is_valid():
+            gift = form.save()
+            messages.success(request, "Подарок сохранён.")
+            return redirect("gifts:detail", gift_id=gift.pk)
+    else:
+        form = GiftForm(initial={"status": Gift.Status.PLANNED})
+    return render(request, "gifts/gift_form.html", {
+        "form": form,
+        "title": "Новый подарок",
+    })
+
+
+def gift_edit(request, gift_id):
+    """Редактирование существующего подарка."""
+    gift = get_object_or_404(Gift, pk=gift_id)
+    if request.method == "POST":
+        form = GiftForm(request.POST, instance=gift)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Изменения сохранены.")
+            return redirect("gifts:detail", gift_id=gift.pk)
+    else:
+        form = GiftForm(instance=gift)
+    return render(request, "gifts/gift_form.html", {
+        "form": form,
+        "title": f"Редактирование подарка №{gift.pk}",
+        "gift": gift,
+    })
+
+
+def gift_cancel(request, gift_id):
+    """Отмена подарка. Запись остаётся в базе со статусом «отменён»."""
+    gift = get_object_or_404(
+        Gift.objects.select_related("person", "event"),
+        pk=gift_id,
+    )
+    if request.method == "POST":
+        gift.status = Gift.Status.CANCELLED
+        gift.save(update_fields=["status"])
+        messages.success(request, "Подарок отменён.")
+        return redirect("gifts:detail", gift_id=gift.pk)
+    return render(request, "gifts/gift_cancel.html", {"gift": gift})
 
 
 def gift_detail(request, gift_id):
