@@ -51,8 +51,9 @@
             <label for="status" class="form-label">Статус</label>
             <select id="status" name="status" class="form-select">
                 <option value="" {% if status == "" %}selected{% endif %}>Все</option>
-                <option value="pending" {% if status == "pending" %}selected{% endif %}>Не вручён</option>
+                <option value="pending" {% if status == "pending" %}selected{% endif %}>Запланирован</option>
                 <option value="done" {% if status == "done" %}selected{% endif %}>Вручён</option>
+                <option value="cancelled" {% if status == "cancelled" %}selected{% endif %}>Отменён</option>
             </select>
         </div>
         <div class="col-md-3">
@@ -79,10 +80,12 @@
             <br>
             <small class="text-muted">Кому: {{ gift.person_name }} | Событие: {{ gift.event_title }}</small>
         </div>
-        {% if gift.is_done %}
+        {% if gift.status == "given" %}
             <span class="badge bg-success">Вручён</span>
+        {% elif gift.status == "cancelled" %}
+            <span class="badge bg-secondary">Отменён</span>
         {% else %}
-            <span class="badge bg-warning text-dark">Не вручён</span>
+            <span class="badge bg-warning text-dark">Запланирован</span>
         {% endif %}
     </li>
     {% empty %}

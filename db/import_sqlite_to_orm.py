@@ -106,7 +106,7 @@ def main():
                         "person_id": row["person_id"],
                         "event_id": row["event_id"],
                         "idea": row["idea"],
-                        "is_done": bool(row["is_done"]),
+                        "status": "given" if row["is_done"] else "planned",
                     },
                 )
 

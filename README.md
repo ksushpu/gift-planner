@@ -17,6 +17,8 @@
 - Python 3
 - Django 5.2
 - Django ORM
+- Django Admin
+- Django Debug Toolbar
 - Django Template Language (DTL)
 - HTML, CSS, JavaScript, Bootstrap 5.3
 - SQLite
@@ -24,10 +26,10 @@
 
 ## Модели данных (Django ORM)
 - **Person** (`people.models`) — человек; поля: `name`
-- **Event** (`events.models`) — событие; поля: `person` (ForeignKey), `title`, `date`;
-  метод `days_until()`
+- **Event** (`events.models`) — событие; поля: `person` (ForeignKey), `title`, `slug`,
+  `date`, вычисляемый `event_year`; методы `days_until()`, `get_absolute_url()`
 - **Gift** (`gifts.models`) — подарок; поля: `person` (ForeignKey), `event` (ForeignKey),
-  `idea`, `is_done`; метод `mark_done()`
+  `idea`, `status` (запланирован, вручён, отменён); метод `mark_done()`
 
 Связи:
 - одно событие относится к одному человеку (`Event.person`);
@@ -40,7 +42,8 @@
 | `/` | главная страница |
 | `/people/` | список людей (поиск по имени) |
 | `/events/` | список событий (поиск, фильтр предстоящих) |
-| `/events/<id>/` | страница события |
+| `/events/<slug>/` | страница события |
+| `/admin/` | административная панель |
 | `/gifts/` | список подарков (поиск, фильтры, сортировка, пагинация) |
 | `/gifts/<id>/` | страница подарка |
 | `/gifts/statistics/` | статистика подарков |
@@ -83,6 +86,11 @@ python manage.py runserver
 ```
 
 Откройте в браузере: http://127.0.0.1:8000/
+
+Административная панель: http://127.0.0.1:8000/admin/
+
+Учётная запись для входа создаётся командой `python manage.py createsuperuser`.
+В учебном проекте можно использовать имя `admin` и пароль `giftplanner`.
 
 ## Автор
 Студенческий проект по дисциплине «Технологии разработки приложений

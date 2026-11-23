@@ -8,6 +8,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
+INTERNAL_IPS = ["127.0.0.1"]
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -15,6 +17,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "debug_toolbar",
     "homepage",
     "people",
     "events",
@@ -23,6 +26,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -43,6 +47,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "giftplanner.context_processors.planner_stats",
             ],
         },
     },

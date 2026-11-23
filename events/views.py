@@ -34,11 +34,11 @@ def events(request):
     return render(request, "events/event_list.html", context)
 
 
-def event_detail(request, event_id):
+def event_detail(request, event_slug):
     """Страница отдельного события."""
     event = get_object_or_404(
         Event.objects.select_related("person"),
-        pk=event_id,
+        slug=event_slug,
     )
 
     context = {

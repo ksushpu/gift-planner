@@ -8,9 +8,11 @@
             Кому: {{ gift.person.name }} | Событие: {{ gift.event.title }}
         </small>
     </div>
-    {% if gift.is_done %}
+    {% if gift.status == "given" %}
         <span class="badge bg-success">Вручён</span>
+    {% elif gift.status == "cancelled" %}
+        <span class="badge bg-secondary">Отменён</span>
     {% else %}
-        <span class="badge bg-warning text-dark">Не вручён</span>
+        <span class="badge bg-warning text-dark">Запланирован</span>
     {% endif %}
 </li>

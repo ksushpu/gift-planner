@@ -46,10 +46,11 @@ def gifts(request):
 
     # Фильтрация по статусу вручения.
     if status == "done":
-        gifts_data = gifts_data.filter(is_done=True)
+        gifts_data = gifts_data.given()
     elif status == "pending":
-        # Исключаем уже вручённые подарки.
-        gifts_data = gifts_data.exclude(is_done=True)
+        gifts_data = gifts_data.planned()
+    elif status == "cancelled":
+        gifts_data = gifts_data.cancelled()
 
     # Добавляем сведения о связанных объектах для шаблона.
     gifts_data = gifts_data.annotate(
@@ -71,7 +72,7 @@ def gifts(request):
     gifts_data = gifts_data.values(
         "id",
         "idea",
-        "is_done",
+        "status",
         "person_name",
         "event_title",
     )
@@ -113,8 +114,9 @@ def statistics(request):
     # Сводные показатели по всем подаркам.
     summary = Gift.objects.aggregate(
         total=Count("id"),
-        done=Count("id", filter=Q(is_done=True)),
-        pending=Count("id", filter=Q(is_done=False)),
+        done=Count("id", filter=Q(status=Gift.Status.GIVEN)),
+        pending=Count("id", filter=Q(status=Gift.Status.PLANNED)),
+        cancelled=Count("id", filter=Q(status=Gift.Status.CANCELLED)),
         avg_id=Avg("id"),
         min_id=Min("id"),
         max_id=Max("id"),

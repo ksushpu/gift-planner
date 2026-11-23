@@ -42,7 +42,7 @@
 <ul class="list-group">
     {% for event in events %}
     <li class="list-group-item">
-        <a href="{% url 'events:detail' event.id %}">
+        <a href="{{ event.get_absolute_url }}">
             {{ event.title }} — {{ event.date }}
         </a>
         <span class="badge bg-secondary">Для: {{ event.person.name }}</span>
